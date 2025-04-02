@@ -22,7 +22,7 @@ public:
      * @return The sin(x) value.
      * 
      */
-    double taylor_sine(double x, int terms = 0);
+    double taylor_sine(double x, int terms = 3);
 
 private:
 
