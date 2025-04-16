@@ -18,12 +18,12 @@ all: $(TARGET)
 
 # Link the program
 $(TARGET): $(SRCS) | bin
- $(CXX) $(CXXFLAGS) -o $(TARGET) $(SRCS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRCS)
 
 # Create the bin directory if it doesn't exist
 bin:
- mkdir -p bin
+	mkdir -p bin
 
 # Clean up generated files
 clean:
- rm -f $(TARGET)
+	rm -f $(TARGET)
