@@ -1,17 +1,4 @@
 
-#include "./FuncA.h"
-
-
-double FuncA::taylor_sine(double x, int terms) {
-    double sine_value = 0.0;
-
-    for (int n = 0; n < terms; ++n) {
-        // Taylor series term: ((-1)^n * x^(2n+1)) / (2n+1)!
-        double term = pow(-1, n) * pow(x, 2 * n + 1) / factorial(2 * n + 1);
-        sine_value += term;
-
-        // Stop early if the term is very small (for better precision)
-
 //Підключення заголовочного файлу класу FuncA, де оголошено методи
 #include "./FuncA.h"
 
@@ -19,7 +6,7 @@ double FuncA::taylor_sine(double x, int terms) {
 double FuncA::taylor_sine(double x, int terms) {
     //Ініціалізація змінної для зберігання кінцевого результату синуса
     double sine_value = 0.0;
-
+   
     // Основний цикл по кількості членів ряду Тейлора
     for (int n = 0; n < terms; ++n) {
         /*ОЛбчислення одного члена ряду Тейлора для sin(x):
@@ -45,13 +32,6 @@ double FuncA::taylor_sine(double x, int terms) {
     return sine_value;
 }
 
-unsigned long long FuncA::factorial(int n) {
-    unsigned long long result = 1;
-
-
-    //Повертаємо результат — приблизне значення sin(x)
-   return sine_value;
-}
 
 // Метод класу FuncA, який обчислює факторіал числа n
 unsigned long long FuncA::factorial(int n) {
@@ -68,10 +48,5 @@ unsigned long long FuncA::factorial(int n) {
 
     return result;
 }
-
-//Повертаємо факторіал
-    return result;
-
-
 
 
