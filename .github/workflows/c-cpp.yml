@@ -1,17 +1,33 @@
-name: Make CI
+name: Automake CI
 
 on:
   push:
-    branches: [ "branchMake" ]
+    branches: [ "branchAutomake" ]
   pull_request:
-    branches: [ "branchMake" ]
-  workflow_dispatch:
+    branches: [ "branchAutomake" ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-    - run: make
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y automake autoconf build-essential
+
+    - name: Generate configuration
+      run: |
+        aclocal
+        autoconf
+        automake --add-missing
+        ./configure
+
+    - name: Build project
+      run: make
+
+    - name: Create tarball
+      run: make dist
+
+    - name: List tarballs
+      run: ls -lh *.tar.gz
