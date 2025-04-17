@@ -1,52 +1,37 @@
+// simple_http_server.cpp — HTTP сервер із обчисленням sin(x) через FuncA
+
+#include "httplib.h"  // Бібліотека HTTP-сервера
+#include "FuncA.h"     // Клас із методом taylor_sine
 #include <iostream>
-#include <stdexcept>
-#include "./FuncA.h"  //Підключаємо заголовок із класом FuncA
+#include <string>
+#include <cstdlib>
 
-int main(int argc, char const *argv[]) {
+int main() {
+    httplib::Server svr;
 
-    //Перевіряємо, чи передано рівно два параметри
-    //argc має бути 3: 1 — назва програми, 2 — значення x, 3 — кількість термів
-    if (argc != 3)
-    {
-        std::cerr << "Invalid usage: 2 parameter are required" << std::endl;
-        std::cerr << "Example: ./sinapp 0.5 10" << std::endl;
-        return 1;
-    }
+    svr.Get("/", [](const httplib::Request& req, httplib::Response& res) {
+        if (!req.has_param("x") || !req.has_param("terms")) {
+            res.status = 400;
+            res.set_content("Missing parameters 'x' and/or 'terms'", "text/plain");
+            return;
+        }
 
-    //Оголошення змінних для введених значень
-    double x;
-    int terms;
+        try {
+            double x = std::stod(req.get_param_value("x"));
+            int terms = std::stoi(req.get_param_value("terms"));
 
-    try
-    {
-        /*Перетворюємо аргументи з рядків у числа
-        argv[1] — перший параметр: x (радіани)
-        argv[2] — другий параметр: кількість членів ряду Тейлора
-        x = std::stod(argv[1]);   // string → double*/
-        x = std::stod(argv[1]);   // string → double
-        terms = std::stoi(argv[2]); // string → int
-    }
-    catch (const std::invalid_argument& e)
-    {
-        //Якщо введено не число
-        std::cerr << "Invalid argument: " << e.what() << std::endl;
-        return 1;
-    }
-    catch (const std::out_of_range& e)
-    {
-        //Якщо число надто велике або мале
-        std::cerr << "Out of range: " << e.what() << std::endl;
-        return 1;
-    }
+            FuncA func;
+            double result = func.taylor_sine(x, terms);
 
-    //Створюємо об'єкт класу FuncA
-    FuncA funcA;
+            std::string response = "sin(" + std::to_string(x) + ") ≈ " + std::to_string(result);
+            res.set_content(response, "text/plain");
+        } catch (const std::exception& e) {
+            res.status = 400;
+            res.set_content(std::string("Error: ") + e.what(), "text/plain");
+        }
+    });
 
-    //Викликаємо метод для обчислення sin(x)
-    double result = funcA.taylor_sine(x, terms);
-
-    //Виводимо результат на екран
-    std::cout << "sin(" << x << ") ≈ " << result << std::endl;
-
+    std::cout << "HTTP сервер запущено на порті 80" << std::endl;
+    svr.listen("0.0.0.0", 80);
     return 0;
 }
