@@ -2,23 +2,27 @@ name: Build Debian Package
 
 on:
   push:
-    branches: [branchAutoPackage]
+    branches: [ branchAutoPackage ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
+    - name: Checkout source
+      uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: sudo apt-get update && sudo apt-get install -y build-essential devscripts debhelper
+    - name: Install build dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential devscripts debhelper fakeroot
 
-      - name: Build Package
-        run: |
-          dpkg-buildpackage -us -uc
+    - name: Build Debian package
+      run: |
+        dpkg-buildpackage -us -uc
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: devops-deb
-          path: ../devops_1.0-1_amd64.deb
+    - name: Upload Debian package
+      uses: actions/upload-artifact@v3
+      with:
+        name: devops-deb
+        path: ../devops_1.0-1_amd64.deb
