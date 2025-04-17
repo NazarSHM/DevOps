@@ -1,0 +1,41 @@
+SHELL = /bin/bash
+VPATH = @srcdir@
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = @top_builddir@
+builddir = @builddir@
+prefix = @prefix@
+
+CXX = @CXX@
+CXXFLAGS = @CXXFLAGS@
+CPPFLAGS = @CPPFLAGS@
+DEFS = @DEFS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+
+check_PROGRAMS = taylorSineTest1 taylorSineTest2 taylorSineTest3 taylorSineTest4
+TESTS = $(check_PROGRAMS)
+
+SRC_COMMON = $(top_builddir)/FuncA.cpp $(top_builddir)/FuncA.h
+
+taylorSineTest1_SOURCES = taylorSineTest1.cpp $(SRC_COMMON)
+taylorSineTest2_SOURCES = taylorSineTest2.cpp $(SRC_COMMON)
+taylorSineTest3_SOURCES = taylorSineTest3.cpp $(SRC_COMMON)
+taylorSineTest4_SOURCES = taylorSineTest4.cpp $(SRC_COMMON)
+
+all: $(check_PROGRAMS)
+
+%: %.cpp $(top_builddir)/FuncA.cpp
+	$(CXX) $(CPPFLAGS) $(DEFS) $(CXXFLAGS) -o $@ $^ $(LIBS)
+    
+check: $(TESTS)
+	@echo "Running tests..."
+	@./taylorSineTest1
+	@./taylorSineTest2
+	@./taylorSineTest3
+	@./taylorSineTest4
+
+clean:
+	rm -f $(check_PROGRAMS) *.o
+
+.PHONY: all check clean
