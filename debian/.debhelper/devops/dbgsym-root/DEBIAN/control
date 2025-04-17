@@ -1,0 +1,13 @@
+Package: devops-dbgsym
+Package-Type: ddeb
+Source: devops
+Version: 1.0-1
+Auto-Built-Package: debug-symbols
+Architecture: amd64
+Maintainer: Nazar Shmahailo <nazar@nazar-VirtualBox>
+Installed-Size: 50
+Depends: devops (= 1.0-1)
+Section: debug
+Priority: optional
+Description: debug symbols for devops
+Build-Ids: 57f38e409778fdfaa277c48df52a94302006813d

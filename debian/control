@@ -1,0 +1,12 @@
+Source: devops
+Section: utils
+Priority: optional
+Maintainer: Nazar Shmahailo <nazar@nazar-VirtualBox>
+Build-Depends: debhelper (>= 9), g++
+Standards-Version: 3.9.6
+
+Package: devops
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Simple C++ Taylor sine program
+ A basic example project that calculates sin(x) using Taylor series.

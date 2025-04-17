@@ -1,0 +1,5 @@
+devops (1.0-1) UNRELEASED; urgency=medium
+
+  * Initial Debian release. (Closes: #XXXXXX)
+
+ -- Nazar <nazar@nazar-VirtualBox>  Thu, 17 Apr 2025 03:03:09 +0300
