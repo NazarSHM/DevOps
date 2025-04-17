@@ -1,0 +1,31 @@
+name: build-and-test
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: sudo apt update && sudo apt install -y build-essential autoconf automake
+
+    - name: Clean build artifacts
+      run: |
+        make distclean || true
+        find . -name "*.o" -type f -delete
+
+    - name: Generate configure script
+      run: autoreconf -i
+
+    - name: Configure project
+      run: ./configure
+
+    - name: Build project
+      run: make
+
+    - name: Run tests
+      run: make check
