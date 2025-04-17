@@ -86,7 +86,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = FuncA$(EXEEXT)
+bin_PROGRAMS = FuncA$(EXEEXT) unit_tests$(EXEEXT) http_server$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -104,6 +104,19 @@ PROGRAMS = $(bin_PROGRAMS)
 am_FuncA_OBJECTS = main.$(OBJEXT) FuncA.$(OBJEXT)
 FuncA_OBJECTS = $(am_FuncA_OBJECTS)
 FuncA_LDADD = $(LDADD)
+am_http_server_OBJECTS = http_server-server.$(OBJEXT) \
+	http_server-FuncA.$(OBJEXT)
+http_server_OBJECTS = $(am_http_server_OBJECTS)
+http_server_LDADD = $(LDADD)
+http_server_LINK = $(CXXLD) $(http_server_CXXFLAGS) $(CXXFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+am__dirstamp = $(am__leading_dot)dirstamp
+am_unit_tests_OBJECTS = tests/unit_tests-test.$(OBJEXT) \
+	unit_tests-FuncA.$(OBJEXT)
+unit_tests_OBJECTS = $(am_unit_tests_OBJECTS)
+unit_tests_LDADD = $(LDADD)
+unit_tests_LINK = $(CXXLD) $(unit_tests_CXXFLAGS) $(CXXFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -119,8 +132,16 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/FuncA.Po ./$(DEPDIR)/main.Po
+am__depfiles_remade = ./$(DEPDIR)/FuncA.Po \
+	./$(DEPDIR)/http_server-FuncA.Po \
+	./$(DEPDIR)/http_server-server.Po ./$(DEPDIR)/main.Po \
+	./$(DEPDIR)/unit_tests-FuncA.Po \
+	tests/$(DEPDIR)/unit_tests-test.Po
 am__mv = mv -f
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 AM_V_CXX = $(am__v_CXX_$(V))
@@ -146,8 +167,10 @@ AM_V_CCLD = $(am__v_CCLD_$(V))
 am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(FuncA_SOURCES)
-DIST_SOURCES = $(FuncA_SOURCES)
+SOURCES = $(FuncA_SOURCES) $(http_server_SOURCES) \
+	$(unit_tests_SOURCES)
+DIST_SOURCES = $(FuncA_SOURCES) $(http_server_SOURCES) \
+	$(unit_tests_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -187,7 +210,8 @@ am__define_uniq_tagged_files = \
     if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
   done | $(am__uniquify_input)`
 DIST_SUBDIRS = $(SUBDIRS)
-am__DIST_COMMON = $(srcdir)/Makefile.in depcomp install-sh missing
+am__DIST_COMMON = $(srcdir)/Makefile.in compile depcomp install-sh \
+	missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -239,6 +263,9 @@ AUTOCONF = ${SHELL} '/home/nazar/DevOps/missing' autoconf
 AUTOHEADER = ${SHELL} '/home/nazar/DevOps/missing' autoheader
 AUTOMAKE = ${SHELL} '/home/nazar/DevOps/missing' automake-1.16
 AWK = mawk
+CC = gcc
+CCDEPMODE = depmode=gcc3
+CFLAGS = -g -O2
 CPPFLAGS = 
 CSCOPE = cscope
 CTAGS = ctags
@@ -281,6 +308,7 @@ abs_builddir = /home/nazar/DevOps
 abs_srcdir = /home/nazar/DevOps
 abs_top_builddir = /home/nazar/DevOps
 abs_top_srcdir = /home/nazar/DevOps
+ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
 am__leading_dot = .
@@ -323,6 +351,10 @@ top_srcdir = .
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = tests
 FuncA_SOURCES = main.cpp FuncA.cpp FuncA.h
+unit_tests_SOURCES = tests/test.cpp FuncA.cpp
+unit_tests_CXXFLAGS = -Iinclude
+http_server_SOURCES = server.cpp FuncA.cpp
+http_server_CXXFLAGS = -Iinclude
 all: all-recursive
 
 .SUFFIXES:
@@ -407,14 +439,35 @@ FuncA$(EXEEXT): $(FuncA_OBJECTS) $(FuncA_DEPENDENCIES) $(EXTRA_FuncA_DEPENDENCIE
 	@rm -f FuncA$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(FuncA_OBJECTS) $(FuncA_LDADD) $(LIBS)
 
+http_server$(EXEEXT): $(http_server_OBJECTS) $(http_server_DEPENDENCIES) $(EXTRA_http_server_DEPENDENCIES) 
+	@rm -f http_server$(EXEEXT)
+	$(AM_V_CXXLD)$(http_server_LINK) $(http_server_OBJECTS) $(http_server_LDADD) $(LIBS)
+tests/$(am__dirstamp):
+	@$(MKDIR_P) tests
+	@: > tests/$(am__dirstamp)
+tests/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) tests/$(DEPDIR)
+	@: > tests/$(DEPDIR)/$(am__dirstamp)
+tests/unit_tests-test.$(OBJEXT): tests/$(am__dirstamp) \
+	tests/$(DEPDIR)/$(am__dirstamp)
+
+unit_tests$(EXEEXT): $(unit_tests_OBJECTS) $(unit_tests_DEPENDENCIES) $(EXTRA_unit_tests_DEPENDENCIES) 
+	@rm -f unit_tests$(EXEEXT)
+	$(AM_V_CXXLD)$(unit_tests_LINK) $(unit_tests_OBJECTS) $(unit_tests_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f tests/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/FuncA.Po # am--include-marker
+include ./$(DEPDIR)/http_server-FuncA.Po # am--include-marker
+include ./$(DEPDIR)/http_server-server.Po # am--include-marker
 include ./$(DEPDIR)/main.Po # am--include-marker
+include ./$(DEPDIR)/unit_tests-FuncA.Po # am--include-marker
+include tests/$(DEPDIR)/unit_tests-test.Po # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -437,6 +490,62 @@ am--depfiles: $(am__depfiles_remade)
 #	$(AM_V_CXX)source='$<' object='$@' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+http_server-server.o: server.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(http_server_CXXFLAGS) $(CXXFLAGS) -MT http_server-server.o -MD -MP -MF $(DEPDIR)/http_server-server.Tpo -c -o http_server-server.o `test -f 'server.cpp' || echo '$(srcdir)/'`server.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/http_server-server.Tpo $(DEPDIR)/http_server-server.Po
+#	$(AM_V_CXX)source='server.cpp' object='http_server-server.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(http_server_CXXFLAGS) $(CXXFLAGS) -c -o http_server-server.o `test -f 'server.cpp' || echo '$(srcdir)/'`server.cpp
+
+http_server-server.obj: server.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(http_server_CXXFLAGS) $(CXXFLAGS) -MT http_server-server.obj -MD -MP -MF $(DEPDIR)/http_server-server.Tpo -c -o http_server-server.obj `if test -f 'server.cpp'; then $(CYGPATH_W) 'server.cpp'; else $(CYGPATH_W) '$(srcdir)/server.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/http_server-server.Tpo $(DEPDIR)/http_server-server.Po
+#	$(AM_V_CXX)source='server.cpp' object='http_server-server.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(http_server_CXXFLAGS) $(CXXFLAGS) -c -o http_server-server.obj `if test -f 'server.cpp'; then $(CYGPATH_W) 'server.cpp'; else $(CYGPATH_W) '$(srcdir)/server.cpp'; fi`
+
+http_server-FuncA.o: FuncA.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(http_server_CXXFLAGS) $(CXXFLAGS) -MT http_server-FuncA.o -MD -MP -MF $(DEPDIR)/http_server-FuncA.Tpo -c -o http_server-FuncA.o `test -f 'FuncA.cpp' || echo '$(srcdir)/'`FuncA.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/http_server-FuncA.Tpo $(DEPDIR)/http_server-FuncA.Po
+#	$(AM_V_CXX)source='FuncA.cpp' object='http_server-FuncA.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(http_server_CXXFLAGS) $(CXXFLAGS) -c -o http_server-FuncA.o `test -f 'FuncA.cpp' || echo '$(srcdir)/'`FuncA.cpp
+
+http_server-FuncA.obj: FuncA.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(http_server_CXXFLAGS) $(CXXFLAGS) -MT http_server-FuncA.obj -MD -MP -MF $(DEPDIR)/http_server-FuncA.Tpo -c -o http_server-FuncA.obj `if test -f 'FuncA.cpp'; then $(CYGPATH_W) 'FuncA.cpp'; else $(CYGPATH_W) '$(srcdir)/FuncA.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/http_server-FuncA.Tpo $(DEPDIR)/http_server-FuncA.Po
+#	$(AM_V_CXX)source='FuncA.cpp' object='http_server-FuncA.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(http_server_CXXFLAGS) $(CXXFLAGS) -c -o http_server-FuncA.obj `if test -f 'FuncA.cpp'; then $(CYGPATH_W) 'FuncA.cpp'; else $(CYGPATH_W) '$(srcdir)/FuncA.cpp'; fi`
+
+tests/unit_tests-test.o: tests/test.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(unit_tests_CXXFLAGS) $(CXXFLAGS) -MT tests/unit_tests-test.o -MD -MP -MF tests/$(DEPDIR)/unit_tests-test.Tpo -c -o tests/unit_tests-test.o `test -f 'tests/test.cpp' || echo '$(srcdir)/'`tests/test.cpp
+	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/unit_tests-test.Tpo tests/$(DEPDIR)/unit_tests-test.Po
+#	$(AM_V_CXX)source='tests/test.cpp' object='tests/unit_tests-test.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(unit_tests_CXXFLAGS) $(CXXFLAGS) -c -o tests/unit_tests-test.o `test -f 'tests/test.cpp' || echo '$(srcdir)/'`tests/test.cpp
+
+tests/unit_tests-test.obj: tests/test.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(unit_tests_CXXFLAGS) $(CXXFLAGS) -MT tests/unit_tests-test.obj -MD -MP -MF tests/$(DEPDIR)/unit_tests-test.Tpo -c -o tests/unit_tests-test.obj `if test -f 'tests/test.cpp'; then $(CYGPATH_W) 'tests/test.cpp'; else $(CYGPATH_W) '$(srcdir)/tests/test.cpp'; fi`
+	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/unit_tests-test.Tpo tests/$(DEPDIR)/unit_tests-test.Po
+#	$(AM_V_CXX)source='tests/test.cpp' object='tests/unit_tests-test.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(unit_tests_CXXFLAGS) $(CXXFLAGS) -c -o tests/unit_tests-test.obj `if test -f 'tests/test.cpp'; then $(CYGPATH_W) 'tests/test.cpp'; else $(CYGPATH_W) '$(srcdir)/tests/test.cpp'; fi`
+
+unit_tests-FuncA.o: FuncA.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(unit_tests_CXXFLAGS) $(CXXFLAGS) -MT unit_tests-FuncA.o -MD -MP -MF $(DEPDIR)/unit_tests-FuncA.Tpo -c -o unit_tests-FuncA.o `test -f 'FuncA.cpp' || echo '$(srcdir)/'`FuncA.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/unit_tests-FuncA.Tpo $(DEPDIR)/unit_tests-FuncA.Po
+#	$(AM_V_CXX)source='FuncA.cpp' object='unit_tests-FuncA.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(unit_tests_CXXFLAGS) $(CXXFLAGS) -c -o unit_tests-FuncA.o `test -f 'FuncA.cpp' || echo '$(srcdir)/'`FuncA.cpp
+
+unit_tests-FuncA.obj: FuncA.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(unit_tests_CXXFLAGS) $(CXXFLAGS) -MT unit_tests-FuncA.obj -MD -MP -MF $(DEPDIR)/unit_tests-FuncA.Tpo -c -o unit_tests-FuncA.obj `if test -f 'FuncA.cpp'; then $(CYGPATH_W) 'FuncA.cpp'; else $(CYGPATH_W) '$(srcdir)/FuncA.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/unit_tests-FuncA.Tpo $(DEPDIR)/unit_tests-FuncA.Po
+#	$(AM_V_CXX)source='FuncA.cpp' object='unit_tests-FuncA.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(unit_tests_CXXFLAGS) $(CXXFLAGS) -c -o unit_tests-FuncA.obj `if test -f 'FuncA.cpp'; then $(CYGPATH_W) 'FuncA.cpp'; else $(CYGPATH_W) '$(srcdir)/FuncA.cpp'; fi`
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run 'make' without going through this Makefile.
@@ -774,6 +883,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f tests/$(DEPDIR)/$(am__dirstamp)
+	-rm -f tests/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -785,7 +896,11 @@ clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 		-rm -f ./$(DEPDIR)/FuncA.Po
+	-rm -f ./$(DEPDIR)/http_server-FuncA.Po
+	-rm -f ./$(DEPDIR)/http_server-server.Po
 	-rm -f ./$(DEPDIR)/main.Po
+	-rm -f ./$(DEPDIR)/unit_tests-FuncA.Po
+	-rm -f tests/$(DEPDIR)/unit_tests-test.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -835,7 +950,11 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
 		-rm -f ./$(DEPDIR)/FuncA.Po
+	-rm -f ./$(DEPDIR)/http_server-FuncA.Po
+	-rm -f ./$(DEPDIR)/http_server-server.Po
 	-rm -f ./$(DEPDIR)/main.Po
+	-rm -f ./$(DEPDIR)/unit_tests-FuncA.Po
+	-rm -f tests/$(DEPDIR)/unit_tests-test.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

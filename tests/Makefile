@@ -401,6 +401,9 @@ AUTOCONF = ${SHELL} '/home/nazar/DevOps/missing' autoconf
 AUTOHEADER = ${SHELL} '/home/nazar/DevOps/missing' autoheader
 AUTOMAKE = ${SHELL} '/home/nazar/DevOps/missing' automake-1.16
 AWK = mawk
+CC = gcc
+CCDEPMODE = depmode=gcc3
+CFLAGS = -g -O2
 CPPFLAGS = 
 CSCOPE = cscope
 CTAGS = ctags
@@ -443,6 +446,7 @@ abs_builddir = /home/nazar/DevOps/tests
 abs_srcdir = /home/nazar/DevOps/tests
 abs_top_builddir = /home/nazar/DevOps
 abs_top_srcdir = /home/nazar/DevOps
+ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
 am__leading_dot = .

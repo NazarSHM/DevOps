@@ -1,5 +1,6 @@
 AC_INIT([DevOps], [1.0], [])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
+AC_PROG_CC
 AC_PROG_CXX
 
 AC_CONFIG_FILES([
