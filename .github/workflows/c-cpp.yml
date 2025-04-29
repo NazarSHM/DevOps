@@ -2,9 +2,9 @@ name: Automake CI
 
 on:
   push:
-    branches: [ "branchAutomake" ]
+    branches: [ "brachAutomake" ]
   pull_request:
-    branches: [ "branchAutomake" ]
+    branches: [ "brachAutomake" ]
 
 jobs:
   build:
